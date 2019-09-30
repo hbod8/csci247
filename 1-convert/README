@@ -1,0 +1,154 @@
+  Until you starting thinking in base-2 or base-16, converting between decimal,
+hexadecimal, and binary integer representations is extremely valuable.  The
+conversion is easy, but it is tedious.  Is there a way we could automate the
+conversion of an decimal integer to hex or binary?
+
+  Your assignment: write a C-program, convert, that reads decimal integers from
+standard-in (a.k.a., the keyboard) and prints the representation of each value
+in either hex or binary.  The program will continue to read values until
+reaching the end-of-file signal.  What is the end-of-file for the keyboard?
+Control-D.  We use control characters so often, control is usually written with
+a carrot.  For example, ^D.  
+
+  Which representation should the program print?  Convert takes a single
+command-line argument that is either "-x" or "-b".  Of course "-x" indicates
+that the program should print the value in hexadecimal; "-b" indicates that it
+should print binary.
+
+OUTCOMES:
+
+· Comfortable with C programming, the C library, and the C tool chain.
+· Basic understanding of source control via git and gitlab.  
+· Properly use some of the C bit-wise operators
+· Produce well formatted code.  
+
+RUBRIC:
+
+· Correctness 
+  · Correctly print binary value
+  · Correctly print hexadecimal value
+  · Correctly print values without using printf's %x format character (et al.)
+· Quality
+  · Programming style (organization, indenting, comments, symbol names, etc.)
+  · Organization (Intro to file, meaningful grouping, etc)
+   
+TEST CASES:
+  
+  $./convert -x
+  1234
+  0x4d2
+  4321
+  0x10e1
+  ^D
+
+  $./convert -b
+  1234
+  100 1101 0010
+  4321
+  1 0000 1110 0001
+  ^D
+
+  $./convert
+  Usage: ./convert [-x|-b]
+
+The dollar sign, $, is a generic shell prompt.  Your prompt will probably be
+different.  Carrot-D (^D) is shorthand for control-D.  We will see why later,
+control-D on a line by itself signals end-of-file to the program.
+
+CODING STYLE:
+
+1) Use meaningful names that give the reader a clue as to the purpose of the thing
+   being named.
+
+2) Avoid the repeated use of numeric constants.  For any numeric constants used
+   in your program, define a static constant:
+
+      static const float PI = 3.141592653589793;
+
+   From then on, use the symbol in place of the value.  There is a C convention
+   to use ALL CAPS for constants.
+
+3) Use comments at the start of the program to identify the purpose of the
+   program.
+
+   /* This program converts decimal to either binary 
+    * or hexadecimal...
+    */
+
+4) Use comments at the start of each function to describe the purpose of the
+   function, the purpose of each parameter to the function, and the return value
+   from the function.
+
+   /* Read Decimal
+    * This function reads and returns a single, decimal integer from stdin.
+    * NOTE: Most of the parsing work is performed by scanf.  
+    */
+   int read_decimal()
+
+5) Avoid in-line comments in the code itself.  
+
+6) Use comments at the start of each section of the program to explain what that
+   part of the program does.
+
+7) Use consistent indentation.
+
+These are general guidelines to help you produce superior code.  However, as a
+software professional, it is your job to know when to deviate from these rules
+to produce code that is as easy to read and understand as possible.
+
+
+
+CONVERT:
+
+Let's turn our attention to the program that was described in the introduction:
+convert.  Name the source file convert.c.  Create the file with your favorite
+text editor.  Please note that Gedit is not your favorite text editor.  Add the
+following to the file:
+
+  #include <stdio.h>
+
+  /* Main
+   * argc, argv   Command line arguments.
+   * return       zero for success, non-zero for failure
+   *
+   * This is the main entry point for the program.  It all starts here. 
+   */
+  int main(int argc, char* argv[]) {
+    printf("%s says, \"Hello, World!\"\n", argv[0]);
+    return 0;
+  }
+
+Okay, this program does not actually convert anything, it is a starting point.
+To verify that it works, we need to compile and run the program:
+
+  $gcc -o convert convert.c
+  $./convert
+  ./convert says, "Hello, World!"
+  $
+
+Before we forget, commit the source file to git:
+
+  $git add convert.c
+  $git commit -m 'Initial, convert program'
+  [master 386a4d8] Initially, convert program
+   1 file changed, 5 insertions(+)
+   create mode 100644 convert/convert.c
+
+If you really want to, you could push these changes to gitlab.  The truth is,
+you only need to push once for each assignment, but pushing after each commit is
+not a bad habit.  My advice is this: commit early, commit often.  There is no
+penalty for having lots of commits; there is a penalty for not committing
+something that is important.  Push when you leave the lab or office.
+
+Now you are on your own.  Remember to use the on-line manual: man.  For example,
+C-strings or char*s are really weird.  The normal comparison operators do not do
+what you expect, so you have to use the strcmp function.  How is it used?
+
+  $man strcmp
+  ...
+
+You may want to read the following man-pages: scanf, printf, strstr, and
+strcmp.
+
+Good luck!
+
