@@ -1,7 +1,7 @@
 /* 
  * CS:APP Data Lab 
  * 
- * <Please put your name and userid here>
+ * Harry Saliba
  * 
  * bits.c - Source file with your solutions to the Lab.
  *          This is the file you will hand in to your instructor.
@@ -139,9 +139,11 @@ NOTES:
  *   Legal ops: ~ |
  *   Max ops: 8
  *   Rating: 1
+ * 
+ * bayes theorem
  */
 int bitAnd(int x, int y) {
-  return 2;
+  return ~(~x | ~y);
 }
 /* 
  * getByte - Extract byte n from word x
