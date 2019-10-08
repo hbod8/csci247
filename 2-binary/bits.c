@@ -152,9 +152,13 @@ int bitAnd(int x, int y) {
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 6
  *   Rating: 2
+ * 
+ *  Step1: (n << 3), shift n left 3 to multiply by 8.
+ *  Step2: x >> (n << 3), shift x to the correct byte position such that the byte we want is in the least significant position.
+ *  step3: (x >> (n << 3)) & 0xff, clip any undesired bytes by only selecting the last byte.
  */
 int getByte(int x, int n) {
-  return 2;
+  return (x >> (n << 3)) & 0xff;
 }
 /* 
  * logicalShift - shift x to the right by n, using a logical shift
@@ -165,7 +169,9 @@ int getByte(int x, int n) {
  *   Rating: 3 
  */
 int logicalShift(int x, int n) {
-  return 2;
+  // printf("(%d(%x) & 0x7fffffff) = %d(%x)\n", x, x, (x & 0x7fffffff), (x & 0x7fffffff));
+  // printf("Test: x = %x(%d), n = %x(%d)\n(~x) = %x(%d), (~x + 1) >> n = %x(%d)\n", x, x, n, n, (~x), (~x), (~x + 1) >> n, (~x + 1) >> n);
+  return (x & 0x80000000) >> n;
 }
 /*
  * bitCount - returns count of number of 1's in word
