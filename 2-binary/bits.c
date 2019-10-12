@@ -169,9 +169,8 @@ int getByte(int x, int n) {
  *   Rating: 3 
  */
 int logicalShift(int x, int n) {
-  // printf("(%d(%x) & 0x7fffffff) = %d(%x)\n", x, x, (x & 0x7fffffff), (x & 0x7fffffff));
-  // printf("Test: x = %x(%d), n = %x(%d)\n(~x) = %x(%d), (~x + 1) >> n = %x(%d)\n", x, x, n, n, (~x), (~x), (~x + 1) >> n, (~x + 1) >> n);
-  return (x & 0x80000000) >> n;
+  unsigned int mask = 0xffffffff;
+  return ((x >> n) & (mask >> n));
 }
 /*
  * bitCount - returns count of number of 1's in word
@@ -180,8 +179,49 @@ int logicalShift(int x, int n) {
  *   Max ops: 40
  *   Rating: 4
  */
-int bitCount(int x) {
-  return 2;
+int bitCount(unsigned int x) {
+  int y = 0;
+  y += (x & 0x80000000) >> 31;
+  y += (x & 0x40000000) >> 30;
+  y += (x & 0x20000000) >> 29;
+  y += (x & 0x10000000) >> 28;
+
+  y += (x & 0x08000000) >> 27;
+  y += (x & 0x04000000) >> 26;
+  y += (x & 0x02000000) >> 25;
+  y += (x & 0x01000000) >> 24;
+
+  y += (x & 0x00800000) >> 23;
+  y += (x & 0x00400000) >> 22;
+  y += (x & 0x00200000) >> 21;
+  y += (x & 0x00100000) >> 20;
+
+  y += (x & 0x00080000) >> 19;
+  y += (x & 0x00040000) >> 18;
+  y += (x & 0x00020000) >> 17;
+  y += (x & 0x00010000) >> 16;
+
+  y += (x & 0x00008000) >> 15;
+  y += (x & 0x00004000) >> 14;
+  y += (x & 0x00002000) >> 13;
+  y += (x & 0x00001000) >> 12;
+  
+  y += (x & 0x00000800) >> 11;
+  y += (x & 0x00000400) >> 10;
+  y += (x & 0x00000200) >> 9;
+  y += (x & 0x00000100) >> 8;
+
+  y += (x & 0x00000080) >> 7;
+  y += (x & 0x00000040) >> 6;
+  y += (x & 0x00000020) >> 5;
+  y += (x & 0x00000010) >> 4;
+
+  y += (x & 0x00000008) >> 3;
+  y += (x & 0x00000004) >> 2;
+  y += (x & 0x00000002) >> 1;
+  y += (x & 0x00000001);
+  // return ((x & 0x80000000) >> 31) + ((x & 0x40000000) >> 30) + ((x & 0x20000000) >> 29) + ((x & 0x10000000) >> 28) + ((x & 0x08000000) >> 27) + ((x & 0x04000000) >> 26);
+  return y;
 }
 /* 
  * bang - Compute !x without using !
@@ -191,7 +231,8 @@ int bitCount(int x) {
  *   Rating: 4 
  */
 int bang(int x) {
-  return 2;
+  int bits = ((~x + 1) | x) >> 31;
+  return bits + 1;
 }
 /* 
  * tmin - return minimum two's complement integer 
@@ -200,7 +241,7 @@ int bang(int x) {
  *   Rating: 1
  */
 int tmin(void) {
-  return 2;
+  return 0x80000000;
 }
 /* 
  * fitsBits - return 1 if x can be represented as an 
@@ -212,7 +253,52 @@ int tmin(void) {
  *   Rating: 2
  */
 int fitsBits(int x, int n) {
-  return 2;
+  // int y = 0;
+  // x = x >> n;
+  // y -= (x & 0x80000000) >> 31;
+  // y -= (x & 0x40000000) >> 30;
+  // y -= (x & 0x20000000) >> 29;
+  // y -= (x & 0x10000000) >> 28;
+
+  // y -= (x & 0x08000000) >> 27;
+  // y -= (x & 0x04000000) >> 26;
+  // y -= (x & 0x02000000) >> 25;
+  // y -= (x & 0x01000000) >> 24;
+
+  // y -= (x & 0x00800000) >> 23;
+  // y -= (x & 0x00400000) >> 22;
+  // y -= (x & 0x00200000) >> 21;
+  // y -= (x & 0x00100000) >> 20;
+
+  // y -= (x & 0x00080000) >> 19;
+  // y -= (x & 0x00040000) >> 18;
+  // y -= (x & 0x00020000) >> 17;
+  // y -= (x & 0x00010000) >> 16;
+
+  // y -= (x & 0x00008000) >> 15;
+  // y -= (x & 0x00004000) >> 14;
+  // y -= (x & 0x00002000) >> 13;
+  // y -= (x & 0x00001000) >> 12;
+  
+  // y -= (x & 0x00000800) >> 11;
+  // y -= (x & 0x00000400) >> 10;
+  // y -= (x & 0x00000200) >> 9;
+  // y -= (x & 0x00000100) >> 8;
+
+  // y -= (x & 0x00000080) >> 7;
+  // y -= (x & 0x00000040) >> 6;
+  // y -= (x & 0x00000020) >> 5;
+  // y -= (x & 0x00000010) >> 4;
+
+  // y -= (x & 0x00000008) >> 3;
+  // y -= (x & 0x00000004) >> 2;
+  // y -= (x & 0x00000002) >> 1;
+  // y -= (x & 0x00000001);
+  // return ~(y >> 31);
+  // see how much data will be held in n
+  int space = 32 + (~n + 1);
+  // reomve bits of n
+  return !(x ^ ((x << space) >> space));
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
@@ -223,7 +309,9 @@ int fitsBits(int x, int n) {
  *   Rating: 2
  */
 int divpwr2(int x, int n) {
-    return 2;
+  // / rounds to zero
+  return (x >> n) + (~(~x & 0x80000000) >> 31);
+  // return x >> n;
 }
 /* 
  * negate - return -x 
@@ -233,7 +321,7 @@ int divpwr2(int x, int n) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+  return ~x + 1;
 }
 /* 
  * isPositive - return 1 if x > 0, return 0 otherwise 
@@ -242,8 +330,13 @@ int negate(int x) {
  *   Max ops: 8
  *   Rating: 3
  */
-int isPositive(int x) {
-  return 2;
+int isPositive(unsigned int x) {
+  // printf("%x\n", x);
+  // printf("%x\n", 0x80000000 >> 31);
+  // return (((~x | 0x80000000) >> 32) | 0x00000001);
+  // printf("%x >> 31 = %x\t%x & 0x0...1 = %x\t!%x = %x\n", x, x >> 31, x >> 31, (x >> 31) & 0x00000001, (x >> 31) & 0x00000001, !((x >> 31)& 0x00000001));
+  return !((x & 0x80000000) >> 31 | !x);
+  // return !(((x >> 31) & 0x00000001) + 1);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -253,7 +346,15 @@ int isPositive(int x) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  return 2;
+  // return !((!(x + (~y)) >> 31) & 1);
+  // return !(((y + (~x + 1)) >> 31) & 1);
+  // check signed bit
+  int signedBit = !(x >> 31) ^ !(y >> 31);
+  // if opposite signs then you know if true
+  int opposite = signedBit & (x >> 31);
+  // find difference.
+  int difference = !signedBit & !((y + (~x + 1)) >> 31);
+  return opposite | difference;
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0
@@ -277,7 +378,14 @@ int ilog2(int x) {
  *   Rating: 2
  */
 unsigned float_neg(unsigned uf) {
- return 2;
+  // printf("%x\n", uf);
+  // int sign = uf >> 31;
+  // int expAndMan = uf & 0X7fffffff;
+  // printf("sign:%x\n", ((~sign & 1) << 31));
+  // printf("%x\n", expAndMan);
+  // printf("res:%x\n\n", ((~sign & 1) << 31) ^ expAndMan);
+  // return ((~sign & 1) << 31) ^ expAndMan;
+  return 2;
 }
 /* 
  * float_i2f - Return bit-level equivalent of expression (float) x
@@ -291,6 +399,7 @@ unsigned float_neg(unsigned uf) {
 unsigned float_i2f(int x) {
   return 2;
 }
+
 /* 
  * float_twice - Return bit-level equivalent of expression 2*f for
  *   floating point argument f.
@@ -303,5 +412,9 @@ unsigned float_i2f(int x) {
  *   Rating: 4
  */
 unsigned float_twice(unsigned uf) {
-  return 2;
+  int sign = (uf >> 31) << 31;
+  int exp = (uf & 0x7f800000);
+  int man = (uf & 0x007);
+  int doubleMan = (man << 1); //loosy
+  return (sign | exp) | doubleMan;
 }
