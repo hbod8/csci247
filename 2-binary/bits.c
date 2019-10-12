@@ -167,6 +167,8 @@ int getByte(int x, int n) {
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 20
  *   Rating: 3 
+ * 
+ *  By first arithmetically shifting the bytes then removing the repeated bit with a mask logical shift can be achived.
  */
 int logicalShift(int x, int n) {
   unsigned int mask = 0xffffffff;
@@ -178,6 +180,9 @@ int logicalShift(int x, int n) {
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 40
  *   Rating: 4
+ * 
+ *  shift every place into the first and add to y, y = bit count
+ *  @TODO reduce ops
  */
 int bitCount(unsigned int x) {
   int y = 0;
@@ -220,7 +225,6 @@ int bitCount(unsigned int x) {
   y += (x & 0x00000004) >> 2;
   y += (x & 0x00000002) >> 1;
   y += (x & 0x00000001);
-  // return ((x & 0x80000000) >> 31) + ((x & 0x40000000) >> 30) + ((x & 0x20000000) >> 29) + ((x & 0x10000000) >> 28) + ((x & 0x08000000) >> 27) + ((x & 0x04000000) >> 26);
   return y;
 }
 /* 
@@ -229,6 +233,8 @@ int bitCount(unsigned int x) {
  *   Legal ops: ~ & ^ | + << >>
  *   Max ops: 12
  *   Rating: 4 
+ * 
+ *  Twos complement of x, combined with x, sign only, add one
  */
 int bang(int x) {
   int bits = ((~x + 1) | x) >> 31;
@@ -251,65 +257,26 @@ int tmin(void) {
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 15
  *   Rating: 2
+ * 
+ *   First, see how much data will be held in n
+ *    Then, reomve bits of n
  */
 int fitsBits(int x, int n) {
-  // int y = 0;
-  // x = x >> n;
-  // y -= (x & 0x80000000) >> 31;
-  // y -= (x & 0x40000000) >> 30;
-  // y -= (x & 0x20000000) >> 29;
-  // y -= (x & 0x10000000) >> 28;
-
-  // y -= (x & 0x08000000) >> 27;
-  // y -= (x & 0x04000000) >> 26;
-  // y -= (x & 0x02000000) >> 25;
-  // y -= (x & 0x01000000) >> 24;
-
-  // y -= (x & 0x00800000) >> 23;
-  // y -= (x & 0x00400000) >> 22;
-  // y -= (x & 0x00200000) >> 21;
-  // y -= (x & 0x00100000) >> 20;
-
-  // y -= (x & 0x00080000) >> 19;
-  // y -= (x & 0x00040000) >> 18;
-  // y -= (x & 0x00020000) >> 17;
-  // y -= (x & 0x00010000) >> 16;
-
-  // y -= (x & 0x00008000) >> 15;
-  // y -= (x & 0x00004000) >> 14;
-  // y -= (x & 0x00002000) >> 13;
-  // y -= (x & 0x00001000) >> 12;
-  
-  // y -= (x & 0x00000800) >> 11;
-  // y -= (x & 0x00000400) >> 10;
-  // y -= (x & 0x00000200) >> 9;
-  // y -= (x & 0x00000100) >> 8;
-
-  // y -= (x & 0x00000080) >> 7;
-  // y -= (x & 0x00000040) >> 6;
-  // y -= (x & 0x00000020) >> 5;
-  // y -= (x & 0x00000010) >> 4;
-
-  // y -= (x & 0x00000008) >> 3;
-  // y -= (x & 0x00000004) >> 2;
-  // y -= (x & 0x00000002) >> 1;
-  // y -= (x & 0x00000001);
-  // return ~(y >> 31);
-  // see how much data will be held in n
   int space = 32 + (~n + 1);
-  // reomve bits of n
   return !(x ^ ((x << space) >> space));
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
- *  Round toward zero
+ *  Round toward result
  *   Examples: divpwr2(15,1) = 7, divpwr2(-33,4) = -2
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 15
  *   Rating: 2
+ * 
+ *  @TODO
  */
 int divpwr2(int x, int n) {
-  // / rounds to zero
+  // / rounds to result
   return (x >> n) + (~(~x & 0x80000000) >> 31);
   // return x >> n;
 }
@@ -319,6 +286,8 @@ int divpwr2(int x, int n) {
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 5
  *   Rating: 2
+ * 
+ *  Two's complement
  */
 int negate(int x) {
   return ~x + 1;
@@ -329,14 +298,11 @@ int negate(int x) {
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 8
  *   Rating: 3
+ * 
+ *  move the signed bit to the ones place
  */
 int isPositive(unsigned int x) {
-  // printf("%x\n", x);
-  // printf("%x\n", 0x80000000 >> 31);
-  // return (((~x | 0x80000000) >> 32) | 0x00000001);
-  // printf("%x >> 31 = %x\t%x & 0x0...1 = %x\t!%x = %x\n", x, x >> 31, x >> 31, (x >> 31) & 0x00000001, (x >> 31) & 0x00000001, !((x >> 31)& 0x00000001));
   return !((x & 0x80000000) >> 31 | !x);
-  // return !(((x >> 31) & 0x00000001) + 1);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -344,15 +310,14 @@ int isPositive(unsigned int x) {
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 24
  *   Rating: 3
+ * 
+ *  first, check signed bit
+ *  then, if opposite signs then you know if true
+ *  and, find difference.
  */
 int isLessOrEqual(int x, int y) {
-  // return !((!(x + (~y)) >> 31) & 1);
-  // return !(((y + (~x + 1)) >> 31) & 1);
-  // check signed bit
   int signedBit = !(x >> 31) ^ !(y >> 31);
-  // if opposite signs then you know if true
   int opposite = signedBit & (x >> 31);
-  // find difference.
   int difference = !signedBit & !((y + (~x + 1)) >> 31);
   return opposite | difference;
 }
@@ -362,9 +327,22 @@ int isLessOrEqual(int x, int y) {
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 90
  *   Rating: 4
+ * 
+ *  For each case where the most significant bit is greater than a power of two, make the result larger.
+ * 
+ *  @TODO this seems very crude if/else
  */
 int ilog2(int x) {
-  return 2;
+  unsigned int result = 0, a;
+  a = ((~((x >> 16) + 0xffffffff)) >> 27) & 0x10;
+  result |= a, x = x >> a;
+  a = ((~((x >>  8) + 0xffffffff)) >> 28) &  0x8;
+  result |= a, x = x >> a;
+  a = ((~((x >>  4) + 0xffffffff)) >> 29) &  0x4;
+  result |= a, x = x >> a;
+  a = ((~((x >>  2) + 0xffffffff)) >> 30) &  0x2;
+  result |= a, x = x >> a;
+  return (result | (x >> 1));
 }
 /* 
  * float_neg - Return bit-level equivalent of expression -f for
