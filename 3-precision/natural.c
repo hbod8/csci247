@@ -72,7 +72,7 @@ natural_t add_naturals(natural_t left, natural_t right)
    memcpy(result.bytes, left.bytes, left.byte_count);
 
    /* 3 */
-   for(i = 0; ++i; i < right.byte_count) {
+   for(i = 0; i < right.byte_count; ++i) {
       add_naturals_aux(&result.bytes[i], 
                        &right.bytes[i],
                        &carry);
