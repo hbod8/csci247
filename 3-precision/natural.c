@@ -220,7 +220,7 @@ natural_t read_natural(FILE* source)
          nat.bytes[i] = (b << 4) + a;
          ++i;
       }
-      while (length > 0) {
+      if (length > 0) {
          nat.bytes[i] = peek(&stack);
       }
    }
@@ -242,10 +242,6 @@ void print_natural(FILE* destination, natural_t natural)
       printf("%x", natural.bytes[i]);
    else
       printf("0");
-
-//   if (natural.byte_count <= 0) {
-//	   printf("0");
-//   }
 
    signed int t = i - 1;
    for (; t >= 0; t--){
