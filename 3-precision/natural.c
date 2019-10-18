@@ -243,8 +243,13 @@ void print_natural(FILE* destination, natural_t natural)
    else
       printf("0");
 
-   for (; i >= 0; --i){
-      printf("%02x", natural.bytes[i]);
+//   if (natural.byte_count <= 0) {
+//	   printf("0");
+//   }
+
+   signed int t = i - 1;
+   for (; t >= 0; t--){
+      printf("%02x", natural.bytes[t]);
    }
 }
 
