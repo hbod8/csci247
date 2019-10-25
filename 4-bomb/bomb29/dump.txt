@@ -174,6 +174,8 @@ if (strings_not_equal( , ) {
   400f44:	48 83 c4 08          	add    $0x8,%rsp
   400f48:	c3                   	retq   
 
+
+
 0000000000400f49 <phase_2>:
 BB1
   400f49:	55                   	push   %rbp
@@ -184,6 +186,7 @@ BB1
   400f58:	48 89 44 24 18       	mov    %rax,0x18(%rsp)
   400f5d:	31 c0                	xor    %eax,%eax
   400f5f:	48 89 e6             	mov    %rsp,%rsi
+
   400f62:	e8 27 07 00 00       	callq  40168e <read_six_numbers>
   400f67:	83 3c 24 00          	cmpl   $0x0,(%rsp)
 (0 == first number)
@@ -247,7 +250,12 @@ BBA:
   400fb7:	5d                   	pop    %rbp
   400fb8:	c3                   	retq   
 
+
+
+
 0000000000400fb9 <phase_3>:
+
+bb1:
   400fb9:	48 83 ec 18          	sub    $0x18,%rsp
   400fbd:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
   400fc4:	00 00 
@@ -259,36 +267,51 @@ BBA:
   400fda:	e8 61 fc ff ff       	callq  400c40 <__isoc99_sscanf@plt>
   400fdf:	83 f8 01             	cmp    $0x1,%eax
   400fe2:	7f 05                	jg     400fe9 <phase_3+0x30>
+bb2: death
   400fe4:	e8 6f 06 00 00       	callq  401658 <explode_bomb>
+bb3: defualt? - no rax + 0 is 0x401036
   400fe9:	83 3c 24 07          	cmpl   $0x7,(%rsp)
   400fed:	77 3b                	ja     40102a <phase_3+0x71>
+bb4: switch based on rax
   400fef:	8b 04 24             	mov    (%rsp),%eax
   400ff2:	ff 24 c5 60 26 40 00 	jmpq   *0x402660(,%rax,8)
+bb5: rax == 1
   400ff9:	b8 ea 00 00 00       	mov    $0xea,%eax
   400ffe:	eb 3b                	jmp    40103b <phase_3+0x82>
+bb6: rax == 2
   401000:	b8 72 01 00 00       	mov    $0x172,%eax
   401005:	eb 34                	jmp    40103b <phase_3+0x82>
+bb7: rax == 3
   401007:	b8 cd 03 00 00       	mov    $0x3cd,%eax
   40100c:	eb 2d                	jmp    40103b <phase_3+0x82>
+bb8: rax == 4
   40100e:	b8 20 02 00 00       	mov    $0x220,%eax
   401013:	eb 26                	jmp    40103b <phase_3+0x82>
+bb9: rax == 5
   401015:	b8 13 03 00 00       	mov    $0x313,%eax
   40101a:	eb 1f                	jmp    40103b <phase_3+0x82>
+bb10: rax == 6
   40101c:	b8 68 03 00 00       	mov    $0x368,%eax
   401021:	eb 18                	jmp    40103b <phase_3+0x82>
+bb11: rax == 7
   401023:	b8 61 00 00 00       	mov    $0x61,%eax
   401028:	eb 11                	jmp    40103b <phase_3+0x82>
+bb12:
   40102a:	e8 29 06 00 00       	callq  401658 <explode_bomb>
   40102f:	b8 00 00 00 00       	mov    $0x0,%eax
   401034:	eb 05                	jmp    40103b <phase_3+0x82>
+bb13: rax = 0
   401036:	b8 14 01 00 00       	mov    $0x114,%eax
+bb14:
   40103b:	3b 44 24 04          	cmp    0x4(%rsp),%eax
   40103f:	74 05                	je     401046 <phase_3+0x8d>
+bb15:
   401041:	e8 12 06 00 00       	callq  401658 <explode_bomb>
   401046:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
   40104b:	64 48 33 04 25 28 00 	xor    %fs:0x28,%rax
   401052:	00 00 
   401054:	74 05                	je     40105b <phase_3+0xa2>
+bb16:
   401056:	e8 35 fb ff ff       	callq  400b90 <__stack_chk_fail@plt>
   40105b:	48 83 c4 18          	add    $0x18,%rsp
   40105f:	c3                   	retq   
