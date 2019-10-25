@@ -323,6 +323,7 @@ bb13: rax = 0
 bb14:
   40103b:	3b 44 24 04          	cmp    0x4(%rsp),%eax
   40103f:	74 05                	je     401046 <phase_3+0x8d>
+if (arg2 == eax) success!
 
 bb15:
   401041:	e8 12 06 00 00       	callq  401658 <explode_bomb>
@@ -340,28 +341,44 @@ bb17:
 
 
 0000000000401060 <func4>:
+rdx = 0xe (14)
+esi = 0x0
+edi = arg1
   401060:	48 83 ec 08          	sub    $0x8,%rsp
   401064:	89 d0                	mov    %edx,%eax
+rax = 0xe (first iteration)
   401066:	29 f0                	sub    %esi,%eax
+rax = rax - 0 (first iteration)
   401068:	89 c1                	mov    %eax,%ecx
+rcx = 0xe (first iteration)
   40106a:	c1 e9 1f             	shr    $0x1f,%ecx
+??
   40106d:	01 c8                	add    %ecx,%eax
   40106f:	d1 f8                	sar    %eax
   401071:	8d 0c 30             	lea    (%rax,%rsi,1),%ecx
   401074:	39 f9                	cmp    %edi,%ecx
   401076:	7e 0c                	jle    401084 <func4+0x24>
+
+bb1:
   401078:	8d 51 ff             	lea    -0x1(%rcx),%edx
-  40107b:	e8 e0 ff ff ff       	callq  401060 <func4>
+! 40107b:	e8 e0 ff ff ff       	callq  401060 <func4>
   401080:	01 c0                	add    %eax,%eax
   401082:	eb 15                	jmp    401099 <func4+0x39>
+
+bb2:
   401084:	b8 00 00 00 00       	mov    $0x0,%eax
   401089:	39 f9                	cmp    %edi,%ecx
   40108b:	7d 0c                	jge    401099 <func4+0x39>
+
+bb3:
   40108d:	8d 71 01             	lea    0x1(%rcx),%esi
-  401090:	e8 cb ff ff ff       	callq  401060 <func4>
+! 401090:	e8 cb ff ff ff       	callq  401060 <func4>
   401095:	8d 44 00 01          	lea    0x1(%rax,%rax,1),%eax
+
+bb4:
   401099:	48 83 c4 08          	add    $0x8,%rsp
   40109d:	c3                   	retq   
+
 
 000000000040109e <phase_4>:
   40109e:	48 83 ec 18          	sub    $0x18,%rsp
@@ -373,25 +390,49 @@ bb17:
   4010b7:	48 89 e2             	mov    %rsp,%rdx
   4010ba:	be 2d 29 40 00       	mov    $0x40292d,%esi
   4010bf:	e8 7c fb ff ff       	callq  400c40 <__isoc99_sscanf@plt>
+scanf(string s)
+s = "%d %d"
+arg1 => rsp
+arg2 => rsp + 1 (0x04)
   4010c4:	83 f8 02             	cmp    $0x2,%eax
   4010c7:	75 06                	jne    4010cf <phase_4+0x31>
+
+bb1:
   4010c9:	83 3c 24 0e          	cmpl   $0xe,(%rsp)
   4010cd:	76 05                	jbe    4010d4 <phase_4+0x36>
+if (arg1 <= 14) good; else boom!
+
+bb2:
   4010cf:	e8 84 05 00 00       	callq  401658 <explode_bomb>
+
+bb3:
   4010d4:	ba 0e 00 00 00       	mov    $0xe,%edx
   4010d9:	be 00 00 00 00       	mov    $0x0,%esi
   4010de:	8b 3c 24             	mov    (%rsp),%edi
-  4010e1:	e8 7a ff ff ff       	callq  401060 <func4>
+setup function variables
+! 4010e1:	e8 7a ff ff ff       	callq  401060 <func4>
   4010e6:	83 f8 06             	cmp    $0x6,%eax
   4010e9:	75 07                	jne    4010f2 <phase_4+0x54>
+if (rax == 6) boom!
+
+bb4:
   4010eb:	83 7c 24 04 06       	cmpl   $0x6,0x4(%rsp)
   4010f0:	74 05                	je     4010f7 <phase_4+0x59>
+if (stack[i - 1] == 6) success!
+
+bb5:
   4010f2:	e8 61 05 00 00       	callq  401658 <explode_bomb>
+
+bb6:
   4010f7:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
   4010fc:	64 48 33 04 25 28 00 	xor    %fs:0x28,%rax
   401103:	00 00 
   401105:	74 05                	je     40110c <phase_4+0x6e>
+
+bb7:
   401107:	e8 84 fa ff ff       	callq  400b90 <__stack_chk_fail@plt>
+
+bb8:
   40110c:	48 83 c4 18          	add    $0x18,%rsp
   401110:	c3                   	retq   
 
