@@ -95,6 +95,16 @@ struct automobile* data[10] = {
   &ten
 };
 
+/* Compare cars.
+ *
+ * Compare function to be passed to array sort.  Compares model year of car.
+ */
+int compare_modelYear(void* left, void* right) {
+  struct automobile* left_car = (struct automobile*) left;
+  struct automobile* right_car = (struct automobile*) right;
+  return left_car->year > right_car->year > 0;
+}
+
 /* Test program
  *
  * This program tests sort_array with an array of automobile objects.  Or
@@ -105,6 +115,8 @@ int main() {
   int status = EXIT_SUCCESS;
 
   void sort_array(void* Array[], unsigned size, int (*compare)(void*,void*));
+
+  sort_array((void**)data, data_size, &compare_modelYear);
 
   for(i = 0; i < data_size - 1; ++i) {
     if (data[i]->year > data[i+1]->year)  {
