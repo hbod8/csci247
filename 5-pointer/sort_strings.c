@@ -19,7 +19,18 @@ const char* data[8] = {
   "job",
   "polish",
   "differently"
-    };
+};
+
+/* Compare function.
+ *
+ * This function is to be passed to the sort function.
+ */
+int compare_strings(void* left, void* right)
+{
+    char* left_string = (char*) left;
+    char* right_string= (char*) right;
+    return strcmp (left_string, right_string) > 0;
+}
 
 /* Test program
  *
@@ -30,7 +41,7 @@ int main() {
   int i;
   int status = EXIT_SUCCESS;
 
-  sort_array((void**)data, data_size);
+  sort_array((void**)data, data_size, &compare_strings);
 
   for(i = 0; i < data_size - 1; ++i) {
     if (strcmp (data[i], data[i+1]) >= 0)  {

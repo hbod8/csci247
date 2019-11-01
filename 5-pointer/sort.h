@@ -8,6 +8,6 @@
  * This function sorts the array into the correct order, but I'm not sure what
  * correct is in this context.
  */
-void sort_array(void* Array[], unsigned size);
+void sort_array(void* Array[], unsigned size, int (*compare)(void*,void*));
 
 #endif /*_SORT_H_*/

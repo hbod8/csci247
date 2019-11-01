@@ -104,7 +104,7 @@ int main() {
   int i;
   int status = EXIT_SUCCESS;
 
-  sort_array((void**)data, data_size);
+  void sort_array(void* Array[], unsigned size, int (*compare)(void*,void*));
 
   for(i = 0; i < data_size - 1; ++i) {
     if (data[i]->year > data[i+1]->year)  {

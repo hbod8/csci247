@@ -24,7 +24,7 @@ void swap(void** left, void** right) {
  * so we have to pass that ourselves.  The actual sorting routine is
  * Bubble-Sort.
  */
-void sort_array(void* Array[], unsigned size)
+void sort_array(void* Array[], unsigned size, int (*compare)(void*,void*))
 {
   int i;
   int have_swapped = 1;
@@ -32,7 +32,7 @@ void sort_array(void* Array[], unsigned size)
   while (have_swapped) {
     have_swapped = 0;
     for (i = 0; i < size - 1; ++i ){
-      if (Array[i]<Array[i+1]) {
+      if (compare(Array[i], Array[i + 1])) {
         swap(&Array[i], &Array[i+1]);
         have_swapped = 1;        
       }
