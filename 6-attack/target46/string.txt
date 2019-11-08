@@ -1,0 +1,7 @@
+48 c7 c7 c6 e3 af 69 c3
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+7e 7e 7e 7e 7e 7e 7e 7e
+a8 22 66 55 00 00 00 00
+09 18 40 00 00 00 00 00
