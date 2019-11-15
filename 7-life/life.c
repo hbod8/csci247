@@ -64,11 +64,28 @@
  * implement Conway's game of life rules.  Your millage may vary, void where
  * prohibited. 
  */
+
 static int min(int x, int y) {
    return x < y ? x : y;
 }
 static int max(int x, int y) {
    return x < y ? y : x;
+}
+
+/* All Neighbors
+ * Given the board and cell position, calculate all the neighbors using one formula.
+ * 
+ * NOTE: Only works if the cell is a non-side cell.
+ */
+int allNeighbors(board b, int i, int j) {
+   return b[i + 1][j] + b[i - 1][j] + b[i][j + 1] + b[i][j - 1] + b[i + 1][j + 1] + b[i - 1][j + 1] + b[i + 1][j - 1] + b[i - 1][j - 1];
+}
+
+/* Out of bounds
+ * Given the cell position, returns true if any neighbor will be out of bounds.
+ */
+int outOfBounds(int i, int j) {
+   return (j - 1 < 0) || (i - 1 < 0) || (j + 1 >= HEIGHT) || (i + 1 >= WIDTH);
 }
 
 /* Neighbors
@@ -80,9 +97,14 @@ static int max(int x, int y) {
  *
  * The use of min and max ensure that the neighborhood is truncated at the edges
  * of the board.  
+ * 
+ * Additionally, if the given cell is not an edge cell, use allNeighbors()
  */
 static int neighbors (board b, int i, int j)
 {
+   if (!outOfBounds(i, j)) {
+      return allNeighbors(b, i, j);
+   }
    int n = 0;
    int i_left = max(0,i-1);
    int i_right  = min(HEIGHT, i+2);
@@ -91,12 +113,18 @@ static int neighbors (board b, int i, int j)
    int ii, jj;
 
    for (ii = i_left; ii < i_right; ++ii) {
-      for (jj = j_left; jj < j_right; ++jj) {
+      for (jj = j_left; jj < j_right; jj += 2) {
+         n += b[ii][jj];
+         n += b[ii][jj + 1];
+      }
+      if (jj - j_right > 0) {
          n += b[ii][jj];
       }
    }
 
    return n - b[i][j];
+
+
 }
 
 /* Evolve
@@ -109,19 +137,13 @@ void evolve(board prv, board nxt)
    int i, j;
    int n;
 
-   for (j=0; j < WIDTH; ++j) {
-      for (i = 0; i < HEIGHT; ++i) {
-         n = neighbors(prv, i, j);
-         if (prv[i][j] && (n == 3 || n == 2))
-            nxt[i][j] = true;
-         else if (!prv[i][j] && (n == 3)) 
-            nxt[i][j] = true;
-         else
-            nxt[i][j] = false;
+   for (i = 0; i < WIDTH; ++i) {
+      for (j = 0; j < HEIGHT; ++j) {
+         n = neighbors(prv, i ,j);
+         nxt[i][j] = (prv[i][j] && (n == 3 || n == 2)) || (!prv[i][j] && (n == 3));
       }
    }
 }
-
 
 /* The program takes one optional arugment: -nw.  This tells the program to skip
  * the GUI components.  The non-GUI form is much more stable and what we will
