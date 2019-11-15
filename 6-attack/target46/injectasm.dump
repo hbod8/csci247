@@ -113,11 +113,11 @@ Disassembly of section .text:
  5f5:	e9 66 ff ff ff       	jmpq   560 <register_tm_clones>
 
 00000000000005fa <main>:
- 5fa:	48 c7 c7 c6 e3 af 69 	mov    $0x69afe3c6,%rdi
- 601:	c3                   	retq   
- 602:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
- 609:	00 00 00 
- 60c:	0f 1f 40 00          	nopl   0x0(%rax)
+ 5fa:	68 1a 19 40 00       	pushq  $0x40191a
+ 5ff:	48 c7 c7 d8 22 66 55 	mov    $0x556622d8,%rdi
+ 606:	c3                   	retq   
+ 607:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+ 60e:	00 00 
 
 0000000000000610 <__libc_csu_init>:
  610:	41 57                	push   %r15
