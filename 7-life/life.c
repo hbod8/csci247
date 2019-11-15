@@ -98,13 +98,10 @@ int outOfBounds(int i, int j) {
  * The use of min and max ensure that the neighborhood is truncated at the edges
  * of the board.  
  * 
- * Additionally, if the given cell is not an edge cell, use allNeighbors()
+ * Additionally, if the given cell is not an edge cell, use the same formula as allNeighbors().  This formula calculates the sum of the 8 edge cells.
  */
 static int neighbors (board b, int i, int j)
 {
-   if (!outOfBounds(i, j)) {
-      return allNeighbors(b, i, j);
-   }
    int n = 0;
    int i_left = max(0,i-1);
    int i_right  = min(HEIGHT, i+2);
@@ -113,11 +110,7 @@ static int neighbors (board b, int i, int j)
    int ii, jj;
 
    for (ii = i_left; ii < i_right; ++ii) {
-      for (jj = j_left; jj < j_right; jj += 2) {
-         n += b[ii][jj];
-         n += b[ii][jj + 1];
-      }
-      if (jj - j_right > 0) {
+      for (jj = j_left; jj < j_right; ++jj) {
          n += b[ii][jj];
       }
    }
@@ -131,17 +124,41 @@ static int neighbors (board b, int i, int j)
  * This is a very simple evolution function.  It applies the rules of Conway's
  * Game of Live as written.  There are a lot of improvements that you can make.
  * Good luck beating Ada, she is really good.
+ * 
+ * This function first calculates all the center cells using the allNeighbors()
+ * formula (not the function call), then it calculates the edge cells using the
+ * normal neighbor function.
  */
 void evolve(board prv, board nxt)
 {
    int i, j;
    int n;
 
-   for (i = 0; i < WIDTH; ++i) {
-      for (j = 0; j < HEIGHT; ++j) {
-         n = neighbors(prv, i ,j);
+   for (i = 1; i < HEIGHT - 1; ++i) {
+      for (j = 1; j < WIDTH - 1; ++j) {
+         n = prv[i + 1][j] + prv[i - 1][j] + prv[i][j + 1] + prv[i][j - 1] + prv[i + 1][j + 1] + prv[i - 1][j + 1] + prv[i + 1][j - 1] + prv[i - 1][j - 1];
          nxt[i][j] = (prv[i][j] && (n == 3 || n == 2)) || (!prv[i][j] && (n == 3));
       }
+   }
+
+   for (i = 0; i < WIDTH; ++i) {
+      n = neighbors(prv, 0, i);
+      nxt[0][i] = (prv[0][i] && (n == 3 || n == 2)) || (!prv[0][i] && (n == 3));
+   }
+
+   for (i = 0; i < WIDTH; ++i) {
+      n = neighbors(prv, HEIGHT - 1, i);
+      nxt[HEIGHT - 1][i] = (prv[HEIGHT - 1][i] && (n == 3 || n == 2)) || (!prv[HEIGHT - 1][i] && (n == 3));
+   }
+
+   for (i = 0; i < HEIGHT; ++i) {
+      n = neighbors(prv, i, 0);
+      nxt[i][0] = (prv[i][0] && (n == 3 || n == 2)) || (!prv[i][0] && (n == 3));
+   }
+
+   for (i = 0; i < HEIGHT; ++i) {
+      n = neighbors(prv, i, WIDTH - 1);
+      nxt[i][WIDTH - 1] = (prv[i][WIDTH - 1] && (n == 3 || n == 2)) || (!prv[i][WIDTH - 1] && (n == 3));
    }
 }
 
